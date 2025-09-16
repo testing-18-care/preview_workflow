@@ -29,8 +29,9 @@ jobs:
           echo "TUNNEL_URL=$url" >> $GITHUB_ENV
 
       - name: Post comment with URL
+        if: github.event.issue.pull_request != null
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} \
+          gh pr comment ${{ github.event.issue.number }} \
             --body "🚀 Preview available at: ${{ env.TUNNEL_URL }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
