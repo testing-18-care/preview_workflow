@@ -12,6 +12,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install cloudflared
+        run: |
+          wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared-linux-amd64.deb
+
+      - name: Start Cloudflare Tunnel
+        id: tunnel
+        run: |
+          # Run cloudflared and capture output
+          url=$(cloudflared tunnel --url http://localhost:5000 --no-autoupdate 2>&1 | grep -o "https://.*trycloudflare.com")
+          echo "TUNNEL_URL=$url" >> $GITHUB_ENV
+
+      - name: Post comment with URL
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "🚀 Preview available at: ${{ env.TUNNEL_URL }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run the app
         run: |
           pip install -r ./requirements.txt
