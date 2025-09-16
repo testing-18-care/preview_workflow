@@ -1,0 +1,35 @@
+name: Deploy Preview
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  deploy:
+    if: contains(github.event.comment.body, '/preview up')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run the app
+        run: |
+          python3 app.py
+
+      # - name: Build and Run Backend
+      #   run: |
+      #     docker build -t backend .
+      #     docker run -d -p 8000:8000 backend
+
+      # - name: Expose with Cloudflare Tunnel
+      #   uses: cloudflare/cloudflare-tunnel-action@v2
+      #   with:
+      #     credentials: ${{ secrets.CLOUDFLARE_TUNNEL_CRED }}
+      #     hostname: pr-${{ github.event.issue.number }}.myapp.dev
+      #     service: http://localhost:8000
+
+      # - name: Comment with Preview URL
+      #   uses: marocchino/sticky-pull-request-comment@v2
+      #   with:
+      #     message: |
+      #       🚀 Preview ready: https://pr-${{ github.event.issue.number }}.myapp.dev
