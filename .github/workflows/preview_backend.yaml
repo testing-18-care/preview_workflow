@@ -20,8 +20,12 @@ jobs:
       - name: Start Cloudflare Tunnel
         id: tunnel
         run: |
-          # Run cloudflared and capture output
-          url=$(cloudflared tunnel --url http://localhost:5000 --no-autoupdate 2>&1 | grep -o "https://.*trycloudflare.com")
+          # Start cloudflared in background and write logs to a file
+          cloudflared tunnel --url http://localhost:5000 --no-autoupdate > cloudflared.log 2>&1 &
+          # Wait a few seconds for it to initialize
+          sleep 5
+          # Extract the tunnel URL from the logs
+          url=$(grep -o "https://.*trycloudflare.com" cloudflared.log | head -n 1)
           echo "TUNNEL_URL=$url" >> $GITHUB_ENV
 
       - name: Post comment with URL
