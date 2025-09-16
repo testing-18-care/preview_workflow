@@ -34,7 +34,7 @@ jobs:
           gh pr comment ${{ github.event.issue.number }} \
             --body "🚀 Preview available at: ${{ env.TUNNEL_URL }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_COMMENT_PAT }}
 
       - name: Run the app
         run: |
