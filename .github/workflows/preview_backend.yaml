@@ -47,7 +47,7 @@ jobs:
 
       - name: Watch PR comments for preview down
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_COMMENT_PAT }}
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           while true; do
@@ -56,7 +56,7 @@ jobs:
       
             if [[ "$latest_comment" == "/preview down" ]]; then
               echo "Stopping backend because of /preview down"
-              kill $(cat backend.pid
+              kill $(cat backend.pid)
               break
             fi
 
